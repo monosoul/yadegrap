@@ -8,8 +8,6 @@ import org.gradle.kotlin.dsl.withGroovyBuilder
 import java.io.File
 import org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME as MAIN
 
-const val DELOMBOK_ANT_TASK_CLASS = "lombok.delombok.ant.Tasks\$Delombok"
-
 open class DelombokTask : DefaultTask() {
     init {
         group = "lombok"
@@ -62,7 +60,7 @@ open class DelombokTask : DefaultTask() {
         ant.withGroovyBuilder {
             "taskdef"(
                     "name" to name,
-                    "classname" to DELOMBOK_ANT_TASK_CLASS,
+                    "classname" to "lombok.delombok.ant.Tasks\$Delombok",
                     "classpath" to pathToLombok)
             "mkdir"("dir" to outputDir)
             "delombok"(
