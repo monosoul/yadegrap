@@ -46,7 +46,7 @@ open class DelombokTask : DefaultTask() {
             .singleOrNull()
 
     /**
-     * Class path to be used during the execution of delmbok task. Should have all the classes used by the sources
+     * Class path to be used during the execution of delombok task. Should have all the classes used by the sources
      * which are going to be delomboked.
      *
      * By default uses main's compile classpath.
