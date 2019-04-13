@@ -71,12 +71,12 @@ open class DelombokTask : DefaultTask() {
                     "to" to outputDir,
                     "from" to inputDir
             ) {
-                "classpath"("value" to classPath)
+                "classpath"("path" to classPath)
                 sourcePath?.run {
-                    "sourcepath"("value" to sourcePath)
+                    "sourcepath"("path" to sourcePath)
                 }
                 modulePath?.run {
-                    "modulepath "("value" to modulePath)
+                    "modulepath"("path" to modulePath)
                 }
                 formatOptions.forEach {
                     "format"("value" to "${it.key}:${it.value}")
