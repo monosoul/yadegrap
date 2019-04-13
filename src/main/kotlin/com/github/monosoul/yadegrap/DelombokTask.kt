@@ -104,7 +104,7 @@ open class DelombokTask : DefaultTask() {
                     "classname" to "lombok.delombok.ant.Tasks\$Delombok",
                     "classpath" to pathToLombok)
             "mkdir"("dir" to outputDir)
-            "delombok"(
+            name(
                     "verbose" to verbose,
                     "encoding" to encoding,
                     "to" to outputDir,
