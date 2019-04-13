@@ -39,6 +39,5 @@ pluginBundle {
 
     mavenCoordinates {
         artifactId = project.name
-        version = project.version as String
     }
 }
