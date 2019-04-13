@@ -41,9 +41,9 @@ open class DelombokTask : DefaultTask() {
      * By default tries to find it in the main's compile classpath.
      */
     @InputFile
-    var pathToLombok: File = main.compileClasspath
-            .filter { it.name.startsWith("lombok") && it.name.endsWith(".jar") }
-            .first()
+    var pathToLombok: File? = main.compileClasspath
+            .filter { it.name.startsWith("lombok") && it.extension == "jar" }
+            .singleOrNull()
 
     /**
      * Class path to be used during the execution of delmbok task. Should have all the classes used by the sources
