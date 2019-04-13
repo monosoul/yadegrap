@@ -8,8 +8,10 @@ class YetAnotherDelombokGradlePlugin : Plugin<Project> {
 
     override fun apply(project: Project): Unit = project.run {
 
-        tasks {
-            register("delombok", DelombokTask::class)
+        pluginManager.withPlugin("org.gradle.java") {
+            tasks {
+                register("delombok", DelombokTask::class)
+            }
         }
     }
 }
