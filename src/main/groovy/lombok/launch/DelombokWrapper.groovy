@@ -15,6 +15,7 @@ class DelombokWrapper {
     private final delombokInstance
 
     DelombokWrapper(ClassLoader sourceClassLoader) {
+        //this way we don't have to add a compile dependency on lombok to the plugin
         def shadowClassLoader = sourceClassLoader.loadClass(SHADOW_CLASSLOADER_FQN).newInstance(
                 sourceClassLoader,
                 SHADOW_CLASS_SUFFIX,
