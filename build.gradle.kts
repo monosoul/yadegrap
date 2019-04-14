@@ -21,7 +21,9 @@ repositories {
 }
 
 dependencies {
-    testImplementation("org.spockframework", "spock-core", "1.3-groovy-2.5")
+    testImplementation("org.spockframework", "spock-core", "1.3-groovy-2.5") {
+        exclude("org.codehaus.groovy")
+    }
 }
 
 tasks {
