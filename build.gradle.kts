@@ -41,13 +41,18 @@ tasks {
     }
 
     "jacocoTestReport"(JacocoReport::class) {
+        executionData(
+                fileTree(project.rootDir) {
+                    include("**/build/jacoco/*.exec")
+                }
+        )
+
         reports {
             xml.isEnabled = true
+            xml.destination = File(buildDir, "reports/jacoco/report.xml")
             html.isEnabled = false
+            csv.isEnabled = false
         }
-
-        val check by tasks
-        check.dependsOn(this)
     }
 
     withType(Test::class) {
