@@ -1,6 +1,6 @@
 package com.github.monosoul.yadegrap
 
-import org.gradle.api.Project
+
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.internal.impldep.com.google.common.io.Files
 import org.gradle.testfixtures.ProjectBuilder
@@ -23,7 +23,7 @@ class DelombokTaskSpec extends Specification {
         task = project.tasks.create("delombok", DelombokTask) { DelombokTask t ->
             t.formatOptions = [
                     "generateDelombokComment": "skip",
-                    "suppressWarnings": "skip"
+                    "suppressWarnings"       : "skip"
             ]
         }
     }
