@@ -5,14 +5,25 @@ plugins {
     `kotlin-dsl`
     id("com.gradle.plugin-publish") version "0.10.1"
     `maven-publish`
+    groovy
+}
+
+kotlinDslPluginOptions {
+    experimentalWarning.set(false)
 }
 
 repositories {
     jcenter()
 }
 
-kotlinDslPluginOptions {
-    experimentalWarning.set(false)
+dependencies {
+    testImplementation("org.spockframework", "spock-core", "1.3-groovy-2.5")
+}
+
+tasks {
+    withType(Test::class) {
+        useJUnit()
+    }
 }
 
 gradlePlugin {
