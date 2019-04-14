@@ -1,13 +1,15 @@
 package com.github.monosoul.yadegrap
 
-import org.gradle.api.AntBuilder.AntMessagePriority.DEBUG
+import lombok.launch.DelombokWrapper
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
+import org.gradle.api.logging.LogLevel.LIFECYCLE
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME
 import org.gradle.kotlin.dsl.getByName
-import org.gradle.kotlin.dsl.withGroovyBuilder
 import java.io.File
+import java.io.PrintStream
+import java.net.URLClassLoader
 
 /**
  * Task that preforms delombok operation on the provided sources.
@@ -59,6 +61,13 @@ open class DelombokTask : DefaultTask() {
     var classPath: String = project.sourceSets.main.compileClasspath.asPath
 
     /**
+     * Boot class path to be used during the execution of delmbok task.
+     */
+    @Input
+    @Optional
+    var bootClassPath: String? = null
+
+    /**
      * Source path to be used during the execution of delmbok task.
      */
     @Input
@@ -96,35 +105,60 @@ open class DelombokTask : DefaultTask() {
     @Input
     var formatOptions: Map<String, String> = mapOf()
 
-    @TaskAction
-    fun run() {
-        if (verbose) {
-            ant.lifecycleLogLevel = DEBUG
-        }
-
-        ant.withGroovyBuilder {
-            "taskdef"(
-                    "name" to name,
-                    "classname" to "lombok.delombok.ant.Tasks\$Delombok",
-                    "classpath" to pathToLombok)
-            "mkdir"("dir" to outputDir)
-            name(
-                    "verbose" to verbose,
-                    "encoding" to encoding,
-                    "to" to outputDir,
-                    "from" to inputDir
-            ) {
-                "classpath"("path" to classPath)
-                sourcePath?.run {
-                    "sourcepath"("path" to sourcePath)
-                }
-                modulePath?.run {
-                    "modulepath"("path" to modulePath)
-                }
-                formatOptions.forEach {
-                    "format"("value" to "${it.key}:${it.value}")
-                }
+    private val loggingPrintStream = object : PrintStream(System.out) {
+        override fun println(x: String?) {
+            x?.run {
+                log(x)
             }
         }
+
+        override fun print(f: String?) {
+            f?.run {
+                log(f)
+            }
+        }
+
+        override fun printf(format: String?, vararg args: Any?): PrintStream {
+            format?.run {
+                log(format(*args))
+            }
+            return this
+        }
+
+        private fun log(msg: String) {
+            logger.log(LIFECYCLE, msg)
+        }
+    }
+
+    @TaskAction
+    fun run() {
+        val delombokWrapper = DelombokWrapper(
+                URLClassLoader(
+                        //gradle wouldn't allow pathToLombok to be null
+                        arrayOf(pathToLombok!!.toURI().toURL())
+                )
+        )
+
+        delombokWrapper
+                .addDirectory(inputDir)
+                .setOutput(outputDir)
+                .setEncoding(encoding)
+                .setVerbose(verbose)
+                .setFormatPreferences(
+                        formatOptions.map { it.key.toLowerCase() to it.value.toLowerCase() }.toMap()
+                )
+                .setClasspath(classPath)
+        bootClassPath?.run {
+            delombokWrapper.setBootclasspath(bootClassPath)
+        }
+        sourcePath?.run {
+            delombokWrapper.setSourcepath(sourcePath)
+        }
+        modulePath?.run {
+            delombokWrapper.setModulepath(sourcePath)
+        }
+
+        delombokWrapper.setPrintStream(loggingPrintStream)
+        delombokWrapper.delombok()
     }
 }
