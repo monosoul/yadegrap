@@ -2,11 +2,12 @@ package com.github.monosoul.yadegrap
 
 import org.gradle.api.AntBuilder.AntMessagePriority.DEBUG
 import org.gradle.api.DefaultTask
+import org.gradle.api.Project
 import org.gradle.api.tasks.*
+import org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.withGroovyBuilder
 import java.io.File
-import org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME as MAIN
 
 /**
  * Task that preforms delombok operation on the provided sources.
@@ -17,7 +18,10 @@ open class DelombokTask : DefaultTask() {
         description = "Delomboks the source of ${project.name}."
     }
 
-    private val main = (project.properties["sourceSets"] as SourceSetContainer).getByName<SourceSet>(MAIN)
+    private val Project.sourceSets
+        get() = properties["sourceSets"] as SourceSetContainer
+    private val SourceSetContainer.main
+        get() = getByName<SourceSet>(MAIN_SOURCE_SET_NAME)
 
     /**
      * Path to sources that should be delomboked.
@@ -25,7 +29,7 @@ open class DelombokTask : DefaultTask() {
      * By default uses the first source directory of main's java sources.
      */
     @InputDirectory
-    var inputDir: File = main.java.srcDirs.first()
+    var inputDir: File = project.sourceSets.main.java.srcDirs.first()
 
     /**
      * Path to the destination directory where delomboked sources are going to be placed.
@@ -41,7 +45,7 @@ open class DelombokTask : DefaultTask() {
      * By default tries to find it in the main's compile classpath.
      */
     @InputFile
-    var pathToLombok: File? = main.compileClasspath
+    var pathToLombok: File? = project.sourceSets.main.compileClasspath
             .filter { it.name.startsWith("lombok") && it.extension == "jar" }
             .singleOrNull()
 
@@ -52,7 +56,7 @@ open class DelombokTask : DefaultTask() {
      * By default uses main's compile classpath.
      */
     @Input
-    var classPath: String = main.compileClasspath.asPath
+    var classPath: String = project.sourceSets.main.compileClasspath.asPath
 
     /**
      * Source path to be used during the execution of delmbok task.
