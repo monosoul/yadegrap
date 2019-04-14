@@ -12,14 +12,11 @@ class DelombokTaskSpec extends Specification {
     @Shared
     def lombokVersion = "1.18.2"
     @Shared
-    def builder = ProjectBuilder.builder()
-    @Shared
-    Project project
+    def project = ProjectBuilder.builder().build()
     @Shared
     DelombokTask task
 
     void setupSpec() {
-        project = builder.build()
         project.plugins.apply(JavaPlugin)
         project.repositories.jcenter()
         project.dependencies.add("compileOnly", "org.projectlombok:lombok:$lombokVersion")
