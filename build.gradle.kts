@@ -6,6 +6,7 @@ plugins {
     id("com.gradle.plugin-publish") version "0.10.1"
     `maven-publish`
     groovy
+    jacoco
 }
 
 kotlinDslPluginOptions {
@@ -21,6 +22,16 @@ dependencies {
 }
 
 tasks {
+    "jacocoTestReport"(JacocoReport::class) {
+        reports {
+            xml.isEnabled = true
+            html.isEnabled = false
+        }
+
+        val check by tasks
+        check.dependsOn(this)
+    }
+    
     withType(Test::class) {
         useJUnit()
     }
