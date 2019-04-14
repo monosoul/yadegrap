@@ -1,5 +1,6 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent.*
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 group = "com.github.monosoul"
 version = "0.0.1"
@@ -21,12 +22,24 @@ repositories {
 }
 
 dependencies {
+    val lombokDependency = "org.projectlombok:lombok:1.18.2"
+    compileOnly(lombokDependency)
+    testCompileOnly(lombokDependency)
     testImplementation("org.spockframework", "spock-core", "1.3-groovy-2.5") {
         exclude("org.codehaus.groovy")
     }
 }
 
 tasks {
+    val compileGroovy = getByName("compileGroovy", GroovyCompile::class) {
+        dependsOn.remove("compileJava")
+    }
+    "compileKotlin"(KotlinCompile::class) {
+        dependsOn(compileGroovy)
+
+        classpath += files(compileGroovy.destinationDir)
+    }
+
     "jacocoTestReport"(JacocoReport::class) {
         reports {
             xml.isEnabled = true
