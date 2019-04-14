@@ -18,7 +18,7 @@ kotlinDslPluginOptions {
 gradlePlugin {
     plugins {
         create("yetAnotherDelombokGradlePlugin") {
-            id = "yadegrap"
+            id = "com.github.monosoul.yadegrap"
             implementationClass = "com.github.monosoul.yadegrap.YetAnotherDelombokGradlePlugin"
         }
     }
