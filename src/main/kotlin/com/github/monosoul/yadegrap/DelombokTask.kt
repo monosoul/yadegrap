@@ -47,9 +47,9 @@ open class DelombokTask : DefaultTask() {
      * By default tries to find it in the main's compile classpath.
      */
     @InputFile
-    var pathToLombok: File? = project.sourceSets.main.compileClasspath
-            .filter { it.name.startsWith("lombok") && it.extension == "jar" }
-            .singleOrNull()
+    var pathToLombok: File? = project.sourceSets.main.compileClasspath.singleOrNull {
+        it.name.startsWith("lombok") && it.extension == "jar"
+    }
 
     /**
      * Class path to be used during the execution of delombok task. Should have all the classes used by the sources
@@ -148,14 +148,14 @@ open class DelombokTask : DefaultTask() {
                         formatOptions.map { it.key.toLowerCase() to it.value.toLowerCase() }.toMap()
                 )
                 .setClasspath(classPath)
-        bootClassPath?.run {
-            delombokWrapper.setBootclasspath(bootClassPath)
+        bootClassPath?.let {
+            delombokWrapper.setBootclasspath(it)
         }
-        sourcePath?.run {
-            delombokWrapper.setSourcepath(sourcePath)
+        sourcePath?.let {
+            delombokWrapper.setSourcepath(it)
         }
-        modulePath?.run {
-            delombokWrapper.setModulepath(sourcePath)
+        modulePath?.let {
+            delombokWrapper.setModulepath(it)
         }
 
         delombokWrapper.setPrintStream(loggingPrintStream)
