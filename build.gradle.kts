@@ -22,12 +22,10 @@ repositories {
 }
 
 dependencies {
-    val lombokDependency = "org.projectlombok:lombok:1.18.6"
-    compileOnly(lombokDependency)
-    testCompileOnly(lombokDependency)
     testImplementation("org.spockframework", "spock-core", "1.3-groovy-2.5") {
         exclude("org.codehaus.groovy")
     }
+    testImplementation(gradleTestKit())
 }
 
 tasks {
