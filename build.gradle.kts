@@ -76,7 +76,12 @@ pluginBundle {
     (plugins) {
         "yetAnotherDelombokGradlePlugin" {
             displayName = "Yet Another Delombok Gradle Plugin"
-            description = "This plugin provides a configurable delombok task that uses Ant delombok task."
+            description = """
+This plugin provides a configurable delombok task that uses Ant delombok task.
+Compatibility table:
+yadegrap | lombok
+0.0.1    | >=1.16.4
+"""
             tags = listOf("lombok", "delombok", "java")
             version = project.version as String
 
