@@ -148,6 +148,7 @@ open class DelombokTask : DefaultTask() {
                         formatOptions.map { it.key.toLowerCase() to it.value.toLowerCase() }.toMap()
                 )
                 .setClasspath(classPath)
+                .setPrintStream(loggingPrintStream)
         bootClassPath?.let {
             delombokWrapper.setBootclasspath(it)
         }
@@ -158,7 +159,6 @@ open class DelombokTask : DefaultTask() {
             delombokWrapper.setModulepath(it)
         }
 
-        delombokWrapper.setPrintStream(loggingPrintStream)
         delombokWrapper.delombok()
     }
 }
