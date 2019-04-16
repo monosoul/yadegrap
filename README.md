@@ -94,7 +94,7 @@ tasks {
     
     "javadoc"(Javadoc::class) {
         dependsOn(delombok)
-        source = fileTree(delombok.get().outputDir)
+        setSource(delombok)
     }
 }
 ```
