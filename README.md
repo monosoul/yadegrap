@@ -5,6 +5,8 @@ A plugin that provides a configurable Gradle task to perform delombok.
 [![codecov](https://codecov.io/gh/monosoul/yadegrap/branch/not-ant/graph/badge.svg)](https://codecov.io/gh/monosoul/yadegrap)
 ![license](https://img.shields.io/github/license/monosoul/yadegrap.svg)
 
+[Gradle Plugin Portal page](https://plugins.gradle.org/plugin/com.github.monosoul.yadegrap)
+
 ## Lombok compatibility table
 | YADeGraP version | Lombok version |
 |:----------------:|:--------------:|
@@ -47,7 +49,7 @@ A build script example:
 ```kotlin
 plugins {
     java
-    id("com.github.monosoul.yadegrap")
+    id("com.github.monosoul.yadegrap") version "0.0.1"
 }
 
 repositories {
