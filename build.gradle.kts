@@ -63,7 +63,7 @@ pluginBundle {
         "yetAnotherDelombokGradlePlugin" {
             displayName = "Yet Another Delombok Gradle Plugin"
             description = """
-This plugin provides a configurable delombok task that uses Ant delombok task.
+This plugin provides a configurable delombok task.
 Compatibility table:
 yadegrap | lombok
 0.0.1    | >=1.16.4
