@@ -40,7 +40,7 @@ You should have `java` or `java-library` plugin applied (or any other plugin tha
 
 To use the plugin you have to have [lombok](https://projectlombok.org) version `1.16.4` or higher in your project's compile classpath.
 
-Also, you'll need a Gradle. :)
+Also, you'll need Gradle. :)
 
 ### Usage example
 A build script example:
