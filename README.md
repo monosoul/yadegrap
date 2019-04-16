@@ -63,6 +63,20 @@ After you applied the plugin, a task named `delombok` would appear under the `lo
 ./gradlew delombok
 ```
 
+Example of task dependencies:
+```kotlin
+tasks {
+    val delombok = "delombok"(DelombokTask::class)
+    
+    "javadoc"(Javadoc::class) {
+        dependsOn(delombok)
+        setSource(delombok)
+    }
+}
+```
+This way `javadoc` task would depend on `delombok` task, and delomboked sources would be used for the javadoc generation.
+<br>
+<br>
 Basically it should be enough to use it, as it would try to configure itself automatically. But if it fails to do so, or you need to 
 configure it yourself, then you have the following options.
 
@@ -83,7 +97,7 @@ configure it yourself, then you have the following options.
 Example of task configuration:
 ```kotlin
 tasks {
-    val delombok = "delombok"(DelombokTask::class) {
+    "delombok"(DelombokTask::class) {
         verbose = true
         formatOptions = mapOf(
             "generateDelombokComment" to "skip",
@@ -91,14 +105,9 @@ tasks {
             "javaLangAsFQN" to "skip"
         )
     }
-    
-    "javadoc"(Javadoc::class) {
-        dependsOn(delombok)
-        setSource(delombok)
-    }
 }
 ```
-This way `javadoc` task would depend on `delombok` task, and delomboked sources would be used for the javadoc generation.
+This way the delombok task would be called with verbose output and specified format options. 
 
 ## Release History
 * 0.0.1
