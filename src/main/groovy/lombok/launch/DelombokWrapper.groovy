@@ -7,10 +7,10 @@ package lombok.launch
  */
 class DelombokWrapper {
 
-    private final SHADOW_CLASSLOADER_FQN = "lombok.launch.ShadowClassLoader"
-    private final SHADOW_CLASS_SUFFIX = "lombok"
-    private final PATCHER_SYMBOLS = "lombok.patcher.Symbols"
-    private final DELOMBOK_CLASS_FQN = "lombok.delombok.Delombok"
+    private final SHADOW_CLASSLOADER_FQN = 'lombok.launch.ShadowClassLoader'
+    private final SHADOW_CLASS_SUFFIX = 'lombok'
+    private final PATCHER_SYMBOLS = 'lombok.patcher.Symbols'
+    private final DELOMBOK_CLASS_FQN = 'lombok.delombok.Delombok'
 
     private final delombokInstance
 

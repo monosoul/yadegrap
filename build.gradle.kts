@@ -1,20 +1,15 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent.*
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 group = "com.github.monosoul"
 version = "0.0.1"
 
 plugins {
-    `kotlin-dsl`
+    `java-gradle-plugin`
     id("com.gradle.plugin-publish") version "0.10.1"
     `maven-publish`
     groovy
     jacoco
-}
-
-kotlinDslPluginOptions {
-    experimentalWarning.set(false)
 }
 
 repositories {
@@ -29,15 +24,6 @@ dependencies {
 }
 
 tasks {
-    val compileGroovy = getByName("compileGroovy", GroovyCompile::class) {
-        dependsOn.remove("compileJava")
-    }
-    "compileKotlin"(KotlinCompile::class) {
-        dependsOn(compileGroovy)
-
-        classpath += files(compileGroovy.destinationDir)
-    }
-
     "jacocoTestReport"(JacocoReport::class) {
         executionData(
                 fileTree(project.rootDir) {
