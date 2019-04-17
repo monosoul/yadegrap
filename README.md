@@ -3,6 +3,7 @@ A plugin that provides a configurable Gradle task to perform delombok.
 
 [![Build Status](https://travis-ci.com/monosoul/yadegrap.svg?branch=not-ant)](https://travis-ci.com/monosoul/yadegrap)
 [![codecov](https://codecov.io/gh/monosoul/yadegrap/branch/not-ant/graph/badge.svg)](https://codecov.io/gh/monosoul/yadegrap)
+![GitHub release](https://img.shields.io/github/release/monosoul/yadegrap.svg)
 ![license](https://img.shields.io/github/license/monosoul/yadegrap.svg)
 
 [Gradle Plugin Portal page](https://plugins.gradle.org/plugin/com.github.monosoul.yadegrap)
