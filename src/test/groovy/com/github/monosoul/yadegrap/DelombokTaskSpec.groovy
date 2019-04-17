@@ -57,8 +57,8 @@ class DelombokTaskSpec extends Specification {
         then:
             delombokedFile.exists()
         and:
-            def delombokedFileContents = delombokedFile.readLines().join("\n")
-            def expectedDelombokedFileContents = expectedDelombokedFile.readLines().join("\n")
+            def delombokedFileContents = delombokedFile.text
+            def expectedDelombokedFileContents = expectedDelombokedFile.text
             delombokedFileContents == expectedDelombokedFileContents
     }
 }
