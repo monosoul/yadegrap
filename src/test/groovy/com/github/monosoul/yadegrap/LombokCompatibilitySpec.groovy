@@ -65,6 +65,7 @@ class LombokCompatibilitySpec extends Specification {
             result.task(":delombok").outcome == SUCCESS
         where:
             lombokVersion << [
+					"1.18.8",
                     "1.18.6",
                     "1.18.4",
                     "1.18.2",
