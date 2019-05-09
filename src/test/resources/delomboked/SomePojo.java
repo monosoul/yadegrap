@@ -22,11 +22,17 @@ final class SomePojo {
 		SomePojoBuilder() {
 		}
 
+		/**
+		 * Some string field
+		 */
 		public SomePojoBuilder someStringField(final String someStringField) {
 			this.someStringField = someStringField;
 			return this;
 		}
 
+		/**
+		 * Another string field
+		 */
 		public SomePojoBuilder anotherStringField(final String anotherStringField) {
 			this.anotherStringField = anotherStringField;
 			return this;
