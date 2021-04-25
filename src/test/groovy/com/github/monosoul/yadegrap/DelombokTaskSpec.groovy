@@ -10,7 +10,7 @@ import spock.lang.Specification
 class DelombokTaskSpec extends Specification {
 
     @Shared
-    def lombokVersion = "1.18.8"
+    def lombokVersion = "1.18.20"
     @Shared
     def project = ProjectBuilder.builder().build()
     @Shared
