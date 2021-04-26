@@ -1,3 +1,4 @@
+import org.gradle.api.JavaVersion.VERSION_1_8
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
@@ -14,6 +15,11 @@ plugins {
     jacoco
 }
 
+java {
+    sourceCompatibility = VERSION_1_8
+    targetCompatibility = VERSION_1_8
+}
+
 repositories {
     jcenter()
 }
@@ -26,11 +32,11 @@ dependencies {
 }
 
 tasks {
-    "jacocoTestReport"(JacocoReport::class) {
+    named<JacocoReport>("jacocoTestReport") {
         executionData(
-                fileTree(project.rootDir) {
-                    include("**/build/jacoco/*.exec")
-                }
+            fileTree(project.rootDir) {
+                include("**/build/jacoco/*.exec")
+            }
         )
 
         reports {
@@ -41,7 +47,7 @@ tasks {
         }
     }
 
-    withType(Test::class) {
+    withType<Test> {
         useJUnit()
 
         testLogging {
