@@ -24,22 +24,24 @@ final class SomePojo {
 
 		/**
 		 * Some string field
+		 * @return {@code this}.
 		 */
-		public SomePojoBuilder someStringField(final String someStringField) {
+		public SomePojo.SomePojoBuilder someStringField(final String someStringField) {
 			this.someStringField = someStringField;
 			return this;
 		}
 
 		/**
 		 * Another string field
+		 * @return {@code this}.
 		 */
-		public SomePojoBuilder anotherStringField(final String anotherStringField) {
+		public SomePojo.SomePojoBuilder anotherStringField(final String anotherStringField) {
 			this.anotherStringField = anotherStringField;
 			return this;
 		}
 
 		public SomePojo build() {
-			return new SomePojo(someStringField, anotherStringField);
+			return new SomePojo(this.someStringField, this.anotherStringField);
 		}
 
 		@java.lang.Override
@@ -48,12 +50,12 @@ final class SomePojo {
 		}
 	}
 
-	public static SomePojoBuilder builder() {
-		return new SomePojoBuilder();
+	public static SomePojo.SomePojoBuilder builder() {
+		return new SomePojo.SomePojoBuilder();
 	}
 
-	public SomePojoBuilder toBuilder() {
-		return new SomePojoBuilder().someStringField(this.someStringField).anotherStringField(this.anotherStringField);
+	public SomePojo.SomePojoBuilder toBuilder() {
+		return new SomePojo.SomePojoBuilder().someStringField(this.someStringField).anotherStringField(this.anotherStringField);
 	}
 
 	/**
