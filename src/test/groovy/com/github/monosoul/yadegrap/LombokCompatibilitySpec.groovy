@@ -3,9 +3,8 @@ package com.github.monosoul.yadegrap
 
 import org.gradle.internal.impldep.com.google.common.io.Files
 import org.gradle.testkit.runner.GradleRunner
-import org.junit.Rule
-import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
+import spock.lang.TempDir
 import spock.lang.Unroll
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
@@ -13,18 +12,13 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 @Unroll
 class LombokCompatibilitySpec extends Specification {
 
-    @Rule
-    final TemporaryFolder testProjectDir = new TemporaryFolder()
-
-    def buildFile
-
-    def setup() {
-        buildFile = testProjectDir.newFile('build.gradle.kts')
-        testProjectDir.newFile('settings.gradle.kts') << "rootProject.name = \"lombokTest\""
-    }
+    @TempDir
+    File testProjectDir
 
     def "should work with lombok #lombokVersion"() {
         setup:
+            def buildFile = new File(testProjectDir, 'build.gradle.kts')
+            new File(testProjectDir, 'settings.gradle.kts') << "rootProject.name = \"lombokTest\""
             buildFile << """
             import com.github.monosoul.yadegrap.DelombokTask
 
@@ -34,7 +28,7 @@ class LombokCompatibilitySpec extends Specification {
             }
             
             repositories {
-                jcenter()
+                mavenCentral()
             }
             
             dependencies {
@@ -43,7 +37,7 @@ class LombokCompatibilitySpec extends Specification {
             
             tasks {
                 "delombok"(DelombokTask::class) {
-                    verbose = true
+                    verbose.set(true)
                 }
             }
             """
@@ -51,12 +45,12 @@ class LombokCompatibilitySpec extends Specification {
             def somePojoFileName = "SomePojo.java"
         and:
             def somePojoFile = new File(getClass().getResource("/$somePojoFileName").toURI())
-            testProjectDir.newFolder('src', 'main', 'java')
-            def target = testProjectDir.newFile("src/main/java/$somePojoFileName")
+            new File(testProjectDir, 'src/main/java').mkdirs()
+            def target = new File(testProjectDir, "src/main/java/$somePojoFileName")
             Files.copy(somePojoFile, target)
         when:
             def result = GradleRunner.create()
-                    .withProjectDir(testProjectDir.root)
+                    .withProjectDir(testProjectDir)
                     .withArguments("delombok", "--stacktrace")
                     .withPluginClasspath()
                     .build()

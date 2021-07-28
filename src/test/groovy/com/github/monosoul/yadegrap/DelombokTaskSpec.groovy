@@ -18,13 +18,15 @@ class DelombokTaskSpec extends Specification {
 
     void setupSpec() {
         project.plugins.apply(JavaPlugin)
-        project.repositories.jcenter()
+        project.repositories.mavenCentral()
         project.dependencies.add("compileOnly", "org.projectlombok:lombok:$lombokVersion")
         task = project.tasks.create("delombok", DelombokTask) { DelombokTask t ->
-            t.formatOptions = [
-                    "generateDelombokComment": "skip",
-                    "suppressWarnings"       : "skip"
-            ]
+            t.formatOptions.set(
+                    [
+                            "generateDelombokComment": "skip",
+                            "suppressWarnings"       : "skip"
+                    ]
+            )
         }
     }
 
@@ -34,11 +36,11 @@ class DelombokTaskSpec extends Specification {
 
     def "should autodetect properties"() {
         expect:
-            task.inputDir == project.file("src/main/java")
-            task.outputDir == project.file("build/delomboked")
-            task.pathToLombok.exists()
-            task.pathToLombok.name == "lombok-${lombokVersion}.jar"
-            task.classPath == project.sourceSets.main.compileClasspath.asPath
+            task.inputDir.asFile.get() == project.file("src/main/java")
+            task.outputDir.asFile.get() == project.file("build/delomboked")
+            task.pathToLombok.present
+            task.pathToLombok.asFile.get().name == "lombok-${lombokVersion}.jar"
+            task.classPath.get() == project.sourceSets.main.compileClasspath.asPath
     }
 
     def "should perform delombok"() {

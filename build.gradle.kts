@@ -5,11 +5,11 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
 
 group = "com.github.monosoul"
-version = "0.0.1"
+version = "1.0.0"
 
 plugins {
     `java-gradle-plugin`
-    id("com.gradle.plugin-publish") version "0.14.0"
+    id("com.gradle.plugin-publish") version "0.15.0"
     `maven-publish`
     groovy
     jacoco
@@ -21,11 +21,11 @@ java {
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
-    testImplementation("org.spockframework", "spock-core", "1.3-groovy-2.5") {
+    testImplementation("org.spockframework:spock-core:2.0-groovy-3.0") {
         exclude("org.codehaus.groovy")
     }
     testImplementation(gradleTestKit())
@@ -40,15 +40,15 @@ tasks {
         )
 
         reports {
-            xml.isEnabled = true
-            xml.destination = File(buildDir, "reports/jacoco/report.xml")
-            html.isEnabled = false
-            csv.isEnabled = false
+            xml.required.set(true)
+            xml.setDestination(project.layout.buildDirectory.file("reports/jacoco/report.xml").map { it.asFile })
+            html.required.set(false)
+            csv.required.set(false)
         }
     }
 
     withType<Test> {
-        useJUnit()
+        useJUnitPlatform()
 
         testLogging {
             events = setOf(PASSED, SKIPPED, FAILED)
@@ -74,6 +74,7 @@ pluginBundle {
 This plugin provides a configurable delombok task.
 Compatibility table:
 yadegrap | lombok
+1.0.0    | >=1.16.4
 0.0.1    | >=1.16.4
 """
             tags = listOf("lombok", "delombok", "java")
