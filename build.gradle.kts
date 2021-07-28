@@ -32,19 +32,15 @@ dependencies {
 }
 
 tasks {
-    named<JacocoReport>("jacocoTestReport") {
-        executionData(
-            fileTree(project.rootDir) {
-                include("**/build/jacoco/*.exec")
-            }
-        )
-
+    val jacocoTestReport = "jacocoTestReport"(JacocoReport::class) {
         reports {
             xml.required.set(true)
-            xml.setDestination(project.layout.buildDirectory.file("reports/jacoco/report.xml").map { it.asFile })
             html.required.set(false)
-            csv.required.set(false)
         }
+    }
+
+    "check" {
+        dependsOn(jacocoTestReport)
     }
 
     withType<Test> {
