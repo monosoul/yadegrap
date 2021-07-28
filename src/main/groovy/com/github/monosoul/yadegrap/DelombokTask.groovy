@@ -2,7 +2,24 @@ package com.github.monosoul.yadegrap
 
 import lombok.launch.DelombokWrapper
 import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.*
+import org.gradle.api.Project
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.MapProperty
+import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
+import org.gradle.api.provider.ProviderFactory
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.SourceSet
+import org.gradle.api.tasks.SourceSetContainer
+import org.gradle.api.tasks.TaskAction
+
+import javax.inject.Inject
 
 import static org.gradle.api.logging.LogLevel.LIFECYCLE
 import static org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME
@@ -12,12 +29,19 @@ import static org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME
  */
 class DelombokTask extends DefaultTask {
 
-    DelombokTask() {
+    private ObjectFactory objectFactory
+    private ProviderFactory providerFactory
+
+    @Inject
+    DelombokTask(
+            ObjectFactory objectFactory,
+            ProviderFactory providerFactory
+    ) {
         this.group = 'lombok'
         this.description = "Delomboks the source of ${project.name}."
+        this.objectFactory = objectFactory
+        this.providerFactory = providerFactory
     }
-
-    private final main = (project.properties['sourceSets'] as SourceSetContainer).getByName(MAIN_SOURCE_SET_NAME)
 
     /**
      * Path to sources that should be delomboked.
@@ -25,7 +49,13 @@ class DelombokTask extends DefaultTask {
      * By default uses the first source directory of main's java sources.
      */
     @InputDirectory
-    File inputDir = main.java.srcDirs.first()
+    final DirectoryProperty inputDir = objectFactory.directoryProperty().convention(
+            project.layout.dir(
+                    getMain(project).map { sourceSet ->
+                        sourceSet.java.sourceDirectories.first()
+                    }
+            )
+    )
 
     /**
      * Path to the destination directory where delomboked sources are going to be placed.
@@ -33,7 +63,9 @@ class DelombokTask extends DefaultTask {
      * By default uses "delomboked" dir in the project's buildDir.
      */
     @OutputDirectory
-    File outputDir = new File(project.buildDir, 'delomboked')
+    final DirectoryProperty outputDir = objectFactory.directoryProperty().convention(
+            project.layout.buildDirectory.dir('delomboked')
+    )
 
     /**
      * Path to lombok.jar.
@@ -41,9 +73,15 @@ class DelombokTask extends DefaultTask {
      * By default tries to find it in the main's compile classpath.
      */
     @InputFile
-    File pathToLombok = main.compileClasspath.findResult {
-        it.name.startsWith('lombok') && it.name.endsWith('jar') ? it : null
-    }
+    final RegularFileProperty pathToLombok = objectFactory.fileProperty().convention(
+            project.layout.file(
+                    getMain(project).map { sourceSet ->
+                        sourceSet.compileClasspath.findResult {
+                            it.name.startsWith('lombok') && it.name.endsWith('jar') ? it : null
+                        }
+                    }
+            )
+    )
 
     /**
      * Class path to be used during the execution of delombok task. Should have all the classes used by the sources
@@ -52,28 +90,30 @@ class DelombokTask extends DefaultTask {
      * By default uses main's compile classpath.
      */
     @Input
-    String classPath = main.compileClasspath.asPath
+    final Property<String> classPath = objectFactory.property(String).convention(
+            getMain(project).map { it.compileClasspath.asPath }
+    )
 
     /**
      * Boot class path to be used during the execution of delmbok task.
      */
     @Input
     @Optional
-    String bootClassPath = null
+    final Property<String> bootClassPath = objectFactory.property(String)
 
     /**
      * Source path to be used during the execution of delmbok task.
      */
     @Input
     @Optional
-    String sourcePath = null
+    final Property<String> sourcePath = objectFactory.property(String)
 
     /**
      * Module path to be used during the execution of delmbok task.
      */
     @Input
     @Optional
-    String modulePath = null
+    final Property<String> modulePath = objectFactory.property(String)
 
     /**
      * Files' encoding.
@@ -81,7 +121,7 @@ class DelombokTask extends DefaultTask {
      * Default: UTF-8
      */
     @Input
-    String encoding = "UTF-8"
+    final Property<String> encoding = objectFactory.property(String).convention('UTF-8')
 
     /**
      * Logging verbosity.
@@ -89,7 +129,7 @@ class DelombokTask extends DefaultTask {
      * Default: false
      */
     @Input
-    Boolean verbose = false
+    final Property<Boolean> verbose = objectFactory.property(Boolean).convention(false)
 
     /**
      * Formatting options for the delombok task.
@@ -97,7 +137,7 @@ class DelombokTask extends DefaultTask {
      * By default is empty.
      */
     @Input
-    Map<String, String> formatOptions = [:]
+    final MapProperty<String, String> formatOptions = objectFactory.mapProperty(String, String).convention([:])
 
     private final loggingPrintStream = new PrintStream(System.out, true) {
         @Override
@@ -125,29 +165,33 @@ class DelombokTask extends DefaultTask {
     def run() {
         def delombokWrapper = new DelombokWrapper(
                 new URLClassLoader(
-                        pathToLombok.toURI().toURL()
+                        pathToLombok.asFile.get().toURI().toURL()
                 )
         )
 
         delombokWrapper
-                .addDirectory(inputDir)
-                .setOutput(outputDir)
-                .setEncoding(encoding)
-                .setVerbose(verbose)
+                .addDirectory(inputDir.asFile.get())
+                .setOutput(outputDir.asFile.get())
+                .setEncoding(encoding.get())
+                .setVerbose(verbose.get())
                 .setFormatPreferences(
-                        formatOptions.collectEntries {
+                        formatOptions.get().collectEntries {
                             key, value -> [key.toLowerCase(), value.toLowerCase()]
                         } as Map<String, String>
                 )
-                .setClasspath(classPath)
+                .setClasspath(classPath.get())
                 .setPrintStream(loggingPrintStream)
-        if (bootClassPath != null)
-            delombokWrapper.setBootclasspath(bootClassPath)
-        if (sourcePath != null)
-            delombokWrapper.setSourcepath(sourcePath)
-        if (modulePath != null)
-            delombokWrapper.setModulepath(modulePath)
+        if (bootClassPath.present)
+            delombokWrapper.setBootclasspath(bootClassPath.get())
+        if (sourcePath.present)
+            delombokWrapper.setSourcepath(sourcePath.get())
+        if (modulePath.present)
+            delombokWrapper.setModulepath(modulePath.get())
 
         delombokWrapper.delombok()
+    }
+
+    private static Provider<SourceSet> getMain(Project project) {
+        return (project.properties['sourceSets'] as SourceSetContainer).named(MAIN_SOURCE_SET_NAME)
     }
 }

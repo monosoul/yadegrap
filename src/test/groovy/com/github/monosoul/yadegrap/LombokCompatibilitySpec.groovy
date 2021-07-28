@@ -28,7 +28,7 @@ class LombokCompatibilitySpec extends Specification {
             }
             
             repositories {
-                jcenter()
+                mavenCentral()
             }
             
             dependencies {
@@ -37,7 +37,7 @@ class LombokCompatibilitySpec extends Specification {
             
             tasks {
                 "delombok"(DelombokTask::class) {
-                    verbose = true
+                    verbose.set(true)
                 }
             }
             """
