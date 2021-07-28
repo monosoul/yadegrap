@@ -15,6 +15,10 @@ plugins {
     jacoco
 }
 
+jacoco {
+    this.toolVersion = "0.8.7"
+}
+
 java {
     sourceCompatibility = VERSION_1_8
     targetCompatibility = VERSION_1_8
