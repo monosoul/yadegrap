@@ -1,7 +1,7 @@
 # Yet Another Delombok Gradle Plugin (YADeGraP)
 A plugin that provides a configurable Gradle task to perform delombok.
 
-[![Build Status](https://github.com/monosoul/yadegrap/actions/workflows/build.yaml/badge.svg?branch=master)](https://github.com/monosoul/yadegrap/actions/workflows/build.yaml?query=branch%3Amaster)
+[![Build Status](https://github.com/monosoul/yadegrap/actions/workflows/build.yaml/badge.svg?branch=not-ant)](https://github.com/monosoul/yadegrap/actions/workflows/build.yaml?query=branch%3Anot-ant)
 [![codecov](https://codecov.io/gh/monosoul/yadegrap/branch/not-ant/graph/badge.svg)](https://codecov.io/gh/monosoul/yadegrap)
 ![GitHub release](https://img.shields.io/github/release/monosoul/yadegrap.svg)
 ![license](https://img.shields.io/github/license/monosoul/yadegrap.svg)
