@@ -18,7 +18,7 @@ class DelombokTaskSpec extends Specification {
 
     void setupSpec() {
         project.plugins.apply(JavaPlugin)
-        project.repositories.jcenter()
+        project.repositories.mavenCentral()
         project.dependencies.add("compileOnly", "org.projectlombok:lombok:$lombokVersion")
         task = project.tasks.create("delombok", DelombokTask) { DelombokTask t ->
             t.formatOptions = [
