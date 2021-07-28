@@ -5,7 +5,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
 
 group = "com.github.monosoul"
-version = "0.0.1"
+version = "1.0.0"
 
 plugins {
     `java-gradle-plugin`
@@ -74,6 +74,7 @@ pluginBundle {
 This plugin provides a configurable delombok task.
 Compatibility table:
 yadegrap | lombok
+1.0.0    | >=1.16.4
 0.0.1    | >=1.16.4
 """
             tags = listOf("lombok", "delombok", "java")
