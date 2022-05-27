@@ -9,7 +9,7 @@ version = "1.0.0"
 
 plugins {
     `java-gradle-plugin`
-    id("com.gradle.plugin-publish") version "0.15.0"
+    id("com.gradle.plugin-publish") version "0.21.0"
     `maven-publish`
     groovy
     jacoco
@@ -29,7 +29,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation("org.spockframework:spock-core:2.0-groovy-3.0") {
+    testImplementation("org.spockframework:spock-core:2.1-groovy-3.0") {
         exclude("org.codehaus.groovy")
     }
     testImplementation(gradleTestKit())
@@ -83,9 +83,5 @@ yadegrap | lombok
             website = "https://github.com/monosoul/yadegrap"
             vcsUrl = "https://github.com/monosoul/yadegrap"
         }
-    }
-
-    mavenCoordinates {
-        artifactId = project.name
     }
 }
